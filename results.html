@@ -69,6 +69,7 @@ h1,h2,h3{font-family:'Kanit',sans-serif;}
 .donut-total-label{font-size:11px;color:var(--ink-soft);}
 .legend{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;margin-top:16px;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+.legend-item.legend-lead{font-weight:700;color:var(--navy-800);font-size:12.5px;}
 .legend-dot{width:9px;height:9px;border-radius:50%;}
 
 .turnout-stat{display:flex;justify-content:space-between;margin-top:18px;font-size:12.5px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:14px;}
@@ -177,8 +178,15 @@ function renderDashboard(data){
     `;
   }).join('');
 
-  const years = Object.keys(data.byYear || {});
+  function formatYearLabel(y){
+    const trimmed = String(y).trim();
+    if(/^\d+$/.test(trimmed)) return `ปี ${trimmed}`;
+    return trimmed;
+  }
+
   const totalVoted = data.totalVoted || 0;
+  const years = Object.keys(data.byYear || {})
+    .sort((a,b) => (data.byYear[b] || 0) - (data.byYear[a] || 0)); // rank: most turnout first
   let donutSvg = '';
   let legendHtml = '';
   if(totalVoted > 0 && years.length){
@@ -194,7 +202,8 @@ function renderDashboard(data){
         stroke-dasharray="${dash} ${circumference-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${CX} ${CY})"/>`;
       offset += dash;
       const pct = Math.round(frac*100);
-      legendHtml += `<div class="legend-item"><span class="legend-dot" style="background:${color}"></span>${y} · ${pct}%</div>`;
+      const crown = i === 0 ? ' 🏆 อันดับ 1' : '';
+      legendHtml += `<div class="legend-item${i===0 ? ' legend-lead' : ''}"><span class="legend-dot" style="background:${color}"></span>${formatYearLabel(y)} · ${pct}%${crown}</div>`;
     });
   }
 

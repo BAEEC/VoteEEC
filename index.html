@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ใช้สิทธิ์เลือกตั้ง | กิจกรรมเลือกตั้งคณะกรรมการนักศึกษา</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0F1338; --navy-800:#171C4A; --navy-700:#20265E; --navy-600:#262C68;
+  --navy-100:#E7E8F3; --navy-050:#F2F3FA;
+  --green-600:#04A868; --green-500:#0FBE79; --green-100:#DFF7EC;
+  --paper:#F7F8FC; --ink:#181B2C; --ink-soft:#565B76; --line:#E1E3EF; --white:#FFFFFF;
+  --radius:16px; --shadow:0 10px 30px -12px rgba(15,19,56,0.18);
+  --red:#D6455D; --red-bg:#FBE9EC;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:'Sarabun',sans-serif;line-height:1.55;min-height:100vh;}
+h1,h2,h3{font-family:'Kanit',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.ci-bar{display:flex;height:5px;width:100%;}
+.ci-bar span:first-child{width:60%;background:var(--navy-600);}
+.ci-bar span:last-child{width:40%;background:var(--green-500);}
+
+.topbar{
+  background:linear-gradient(155deg,var(--navy-900) 0%,var(--navy-700) 100%);
+  color:#fff;padding:18px 24px;text-align:center;
+}
+.topbar h1{font-size:17px;margin:0;font-weight:600;}
+.topbar p{margin:4px 0 0;font-size:12.5px;color:rgba(255,255,255,0.6);}
+
+.wrap{max-width:480px;margin:0 auto;padding:32px 20px 60px;}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;}
+.view{display:none;}
+.view.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.pill-title{
+  display:inline-block;background:var(--navy-600);color:#fff;font-weight:600;
+  font-size:14px;padding:8px 20px;border-radius:999px;margin-bottom:22px;
+}
+
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy-700);margin-bottom:6px;}
+.field input{
+  width:100%;padding:13px 15px;border:1.4px solid var(--line);border-radius:11px;
+  font-family:'Sarabun',sans-serif;font-size:15px;background:var(--navy-050);color:var(--ink);
+  letter-spacing:0.5px;
+}
+.field input:focus{outline:none;border-color:var(--green-500);background:var(--white);}
+.hint{font-size:11.5px;color:var(--ink-soft);margin-top:5px;}
+
+.btn{
+  width:100%;border:none;border-radius:12px;padding:15px 18px;font-size:15px;font-weight:600;
+  cursor:pointer;font-family:'Sarabun',sans-serif;transition:transform .12s ease, opacity .12s ease;
+}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--green-500);color:var(--navy-900);box-shadow:0 8px 20px -8px rgba(15,190,121,.5);}
+.btn-primary:hover{background:var(--green-600);color:#fff;}
+.btn-primary:disabled{background:#C7CBDB;color:#8B8FA3;cursor:not-allowed;box-shadow:none;}
+.btn-ghost{background:transparent;color:var(--navy-700);border:1.4px solid var(--line);margin-top:10px;}
+.btn-ghost:hover{border-color:var(--navy-600);}
+
+.error-box{
+  background:var(--red-bg);color:var(--red);border:1px solid #F2C1CB;padding:11px 14px;
+  border-radius:10px;font-size:13px;margin-bottom:16px;display:none;
+}
+.error-box.show{display:block;}
+
+.identity{
+  background:var(--navy-050);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:20px;
+}
+.identity .name{font-family:'Kanit',sans-serif;font-weight:600;font-size:17px;color:var(--navy-800);}
+.identity .meta{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+
+.status-line{font-size:15px;font-weight:600;margin-bottom:20px;}
+.status-line.ok{color:var(--green-600);}
+.status-line.no{color:var(--ink-soft);}
+
+.candidate{
+  display:flex;align-items:center;gap:14px;border:1.6px solid var(--line);border-radius:13px;
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s, background .15s;
+}
+.candidate:hover{border-color:var(--green-500);}
+.candidate.selected{border-color:var(--green-500);background:var(--green-100);}
+.candidate .avatar{
+  width:44px;height:44px;border-radius:50%;background:var(--navy-600);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-weight:600;flex-shrink:0;
+  font-size:15px;overflow:hidden;
+}
+.candidate .avatar img{width:100%;height:100%;object-fit:cover;}
+.candidate .info{flex:1;}
+.candidate .num{font-size:11.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;}
+.candidate .name{font-weight:600;color:var(--navy-800);font-size:14.5px;}
+.candidate .radio{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;position:relative;
+}
+.candidate.selected .radio{border-color:var(--green-500);}
+.candidate.selected .radio::after{
+  content:"";position:absolute;inset:3px;border-radius:50%;background:var(--green-500);
+}
+
+.confirm-note{font-size:12px;color:var(--ink-soft);text-align:center;margin:14px 0 6px;line-height:1.6;}
+.confirm-note b{color:var(--red);}
+
+.check-badge{
+  width:64px;height:64px;border-radius:50%;background:var(--green-100);color:var(--green-600);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+}
+.center{text-align:center;}
+.loading{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink-soft);font-size:13.5px;padding:20px 0;}
+.spinner{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--green-500);animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+footer{text-align:center;padding:20px;color:var(--ink-soft);font-size:11.5px;}
+a.reslink{color:var(--green-600);font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="ci-bar"><span></span><span></span></div>
+<div class="topbar">
+  <h1>กิจกรรมเลือกตั้งคณะกรรมการนักศึกษา</h1>
+  <p>คณะบริหารธุรกิจ วิทยาเขตอีอีซี · ประจำปีการศึกษา 2569 · กลุ่ม B</p>
+</div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- ============ LOGIN ============ -->
+    <div class="view active" id="view-login">
+      <span class="pill-title">ใช้สิทธิ์เลือกตั้ง</span>
+      <div class="error-box" id="loginError"></div>
+      <div class="field">
+        <label>รหัสนักศึกษา</label>
+        <input type="text" id="inStudentId" inputmode="numeric" placeholder="เช่น 66xxxxxxxx" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>รหัสบัตรประชาชน (13 หลัก)</label>
+        <input type="password" id="inNationalId" inputmode="numeric" maxlength="13" placeholder="เลข 13 หลัก ไม่ต้องมีขีด" autocomplete="off">
+        <div class="hint">ข้อมูลของคุณถูกส่งไปตรวจสอบฝั่งเซิร์ฟเวอร์เท่านั้น ระบบไม่บันทึกรหัสนี้ไว้ที่ใด</div>
+      </div>
+      <button class="btn btn-primary" id="btnLogin">ตรวจสอบสิทธิ์</button>
+    </div>
+
+    <!-- ============ ELIGIBLE (can vote) ============ -->
+    <div class="view" id="view-eligible">
+      <span class="pill-title">ตรวจสอบข้อมูล</span>
+      <div class="identity">
+        <div class="name" id="elFullName"></div>
+        <div class="meta" id="elMeta"></div>
+      </div>
+      <div class="status-line ok">✓ ท่านมีสิทธิ์เลือกตั้ง</div>
+      <button class="btn btn-primary" id="btnGoBallot">เลือกตั้ง</button>
+      <button class="btn btn-ghost" id="btnBackFromEligible">กลับสู่หน้าแรก</button>
+    </div>
+
+    <!-- ============ ALREADY VOTED ============ -->
+    <div class="view" id="view-voted">
+      <span class="pill-title">ตรวจสอบข้อมูล</span>
+      <div class="identity">
+        <div class="name" id="vFullName"></div>
+        <div class="meta" id="vMeta"></div>
+      </div>
+      <div class="status-line no">ท่านใช้สิทธิ์เลือกตั้งไปแล้ว</div>
+      <button class="btn btn-primary" disabled>เลือกตั้ง</button>
+      <button class="btn btn-ghost" id="btnBackFromVoted">กลับสู่หน้าแรก</button>
+    </div>
+
+    <!-- ============ BALLOT ============ -->
+    <div class="view" id="view-ballot">
+      <span class="pill-title">บัตรลงคะแนน</span>
+      <div id="candidateList"></div>
+      <div class="confirm-note">เมื่อกดยืนยันแล้ว <b>ไม่สามารถแก้ไขหรือเปลี่ยนแปลงได้ในทุกกรณี</b></div>
+      <button class="btn btn-primary" id="btnConfirmVote" disabled>ยืนยัน</button>
+    </div>
+
+    <!-- ============ THANK YOU ============ -->
+    <div class="view center" id="view-thanks">
+      <div class="check-badge">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h2 style="margin:0 0 8px;font-size:18px;">ขอบคุณที่ใช้สิทธิ์เลือกตั้ง</h2>
+      <p style="color:var(--ink-soft);font-size:13.5px;margin:0 0 22px;">คะแนนของท่านถูกบันทึกโดยไม่ระบุตัวตนเรียบร้อยแล้ว</p>
+      <a class="reslink" href="results.html">ดูผลการเลือกตั้งแบบเรียลไทม์ →</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>Panyapiwat Institute of Management · คณะบริหารธุรกิจ วิทยาเขตอีอีซี</footer>
+
+<script>
+/* ================= CONFIGURE THIS ================= */
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+/* ==================================================== */
+
+let session = { studentId:'', nationalId:'', fullName:'', year:'' };
+let selectedCandidate = null;
+
+function show(id){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setLoading(btn, isLoading, labelIdle){
+  btn.disabled = isLoading;
+  btn.textContent = isLoading ? 'กำลังตรวจสอบ...' : labelIdle;
+}
+
+async function apiPost(payload){
+  const res = await fetch(API_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+    body: JSON.stringify(payload)
+  });
+  return res.json();
+}
+async function apiGet(action){
+  const res = await fetch(`${API_URL}?action=${action}`);
+  return res.json();
+}
+
+document.getElementById('btnLogin').addEventListener('click', async ()=>{
+  const studentId = document.getElementById('inStudentId').value.trim();
+  const nationalId = document.getElementById('inNationalId').value.trim();
+  const errBox = document.getElementById('loginError');
+  errBox.classList.remove('show');
+
+  if(!studentId || !nationalId){
+    errBox.textContent = 'กรุณากรอกรหัสนักศึกษาและรหัสบัตรประชาชนให้ครบ';
+    errBox.classList.add('show');
+    return;
+  }
+  if(API_URL.indexOf('PASTE_YOUR') === 0){
+    errBox.textContent = 'ยังไม่ได้ตั้งค่า API_URL ในไฟล์นี้ — ดูวิธีตั้งค่าใน README.md';
+    errBox.classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('btnLogin');
+  setLoading(btn, true, 'ตรวจสอบสิทธิ์');
+  try{
+    const result = await apiPost({ action:'checkAuth', studentId, nationalId });
+    if(!result.success){
+      errBox.textContent = result.message || 'ตรวจสอบข้อมูลไม่สำเร็จ';
+      errBox.classList.add('show');
+      return;
+    }
+    session = { studentId, nationalId, fullName: result.fullName, year: result.year };
+
+    if(result.hasVoted){
+      document.getElementById('vFullName').textContent = result.fullName;
+      document.getElementById('vMeta').textContent = `รหัสนักศึกษา ${studentId} · ${result.year || ''}`;
+      show('view-voted');
+    } else {
+      document.getElementById('elFullName').textContent = result.fullName;
+      document.getElementById('elMeta').textContent = `รหัสนักศึกษา ${studentId} · ${result.year || ''}`;
+      show('view-eligible');
+    }
+  } catch(err){
+    errBox.textContent = 'เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+    errBox.classList.add('show');
+  } finally {
+    setLoading(btn, false, 'ตรวจสอบสิทธิ์');
+  }
+});
+
+document.getElementById('btnBackFromEligible').addEventListener('click', resetToLogin);
+document.getElementById('btnBackFromVoted').addEventListener('click', resetToLogin);
+
+function resetToLogin(){
+  document.getElementById('inStudentId').value = '';
+  document.getElementById('inNationalId').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  session = { studentId:'', nationalId:'', fullName:'', year:'' };
+  show('view-login');
+}
+
+document.getElementById('btnGoBallot').addEventListener('click', async ()=>{
+  const list = document.getElementById('candidateList');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>กำลังโหลดรายชื่อผู้สมัคร...</div>';
+  show('view-ballot');
+  try{
+    const result = await apiGet('getCandidates');
+    renderCandidates(result.candidates || []);
+  } catch(err){
+    list.innerHTML = '<div class="error-box show">โหลดรายชื่อผู้สมัครไม่สำเร็จ</div>';
+  }
+});
+
+function renderCandidates(candidates){
+  const list = document.getElementById('candidateList');
+  list.innerHTML = '';
+  selectedCandidate = null;
+  document.getElementById('btnConfirmVote').disabled = true;
+
+  candidates.forEach(c=>{
+    const initial = (c.name || '?').trim().charAt(0);
+    const div = document.createElement('div');
+    div.className = 'candidate';
+    div.dataset.number = c.number;
+    div.innerHTML = `
+      <div class="avatar">${c.photo ? `<img src="${c.photo}" alt="">` : initial}</div>
+      <div class="info">
+        <div class="num">${Number(c.number) === 0 ? 'งดออกเสียง' : 'หมายเลข ' + c.number}</div>
+        <div class="name">${c.name}</div>
+      </div>
+      <div class="radio"></div>
+    `;
+    div.addEventListener('click', ()=>{
+      document.querySelectorAll('.candidate').forEach(el=>el.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedCandidate = c.number;
+      document.getElementById('btnConfirmVote').disabled = false;
+    });
+    list.appendChild(div);
+  });
+}
+
+document.getElementById('btnConfirmVote').addEventListener('click', async ()=>{
+  if(selectedCandidate === null) return;
+  const ok = confirm('เมื่อกดยืนยันแล้ว จะไม่สามารถแก้ไขหรือเปลี่ยนแปลงได้ในทุกกรณี ต้องการยืนยันคะแนนใช่หรือไม่?');
+  if(!ok) return;
+
+  const btn = document.getElementById('btnConfirmVote');
+  setLoading(btn, true, 'ยืนยัน');
+  try{
+    const result = await apiPost({
+      action:'submitVote',
+      studentId: session.studentId,
+      nationalId: session.nationalId,
+      candidateNumber: selectedCandidate
+    });
+    if(!result.success){
+      alert(result.message || 'บันทึกคะแนนไม่สำเร็จ กรุณาลองใหม่');
+      setLoading(btn, false, 'ยืนยัน');
+      return;
+    }
+    session = { studentId:'', nationalId:'', fullName:'', year:'' };
+    show('view-thanks');
+  } catch(err){
+    alert('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    setLoading(btn, false, 'ยืนยัน');
+  }
+});
+</script>
+</body>
+</html>

@@ -33,10 +33,25 @@ h1,h2,h3{font-family:'Kanit',sans-serif;}
 .topbar h1{font-size:17px;margin:0;font-weight:600;}
 .topbar p{margin:4px 0 0;font-size:12.5px;color:rgba(255,255,255,0.6);}
 .results-cta{
-  background:transparent;color:var(--green-500);font-weight:600;font-size:12.5px;
-  padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;border:1.4px solid rgba(15,190,121,0.5);
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--green-500);color:var(--navy-900);font-weight:700;font-size:12.5px;
+  padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;border:none;
+  box-shadow:0 0 0 0 rgba(15,190,121,0.55);animation:cta-pulse 2.2s infinite;
 }
-.results-cta:hover{background:rgba(15,190,121,0.12);}
+.results-cta:hover{background:var(--green-600);color:#fff;}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--navy-900);flex-shrink:0;
+  animation:dot-blink 1.3s ease-in-out infinite;
+}
+@keyframes cta-pulse{
+  0%{box-shadow:0 0 0 0 rgba(15,190,121,0.55);}
+  70%{box-shadow:0 0 0 9px rgba(15,190,121,0);}
+  100%{box-shadow:0 0 0 0 rgba(15,190,121,0);}
+}
+@keyframes dot-blink{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.3;transform:scale(0.75);}
+}
 
 .wrap{max-width:480px;margin:0 auto;padding:32px 20px 60px;}
 
@@ -46,8 +61,9 @@ h1,h2,h3{font-family:'Kanit',sans-serif;}
 @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
 .pill-title{
-  display:inline-block;background:var(--navy-600);color:#fff;font-weight:600;
-  font-size:14px;padding:8px 20px;border-radius:999px;margin-bottom:22px;
+  display:inline-block;color:var(--navy-800);font-weight:700;
+  font-size:12.5px;letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:20px;padding-bottom:7px;border-bottom:2.5px solid var(--green-500);
 }
 
 .field{margin-bottom:16px;}
@@ -134,7 +150,7 @@ a.reslink{color:var(--green-600);font-weight:600;text-decoration:none;}
       <h1>กิจกรรมเลือกตั้งคณะกรรมการนักศึกษา</h1>
       <p>คณะบริหารธุรกิจ วิทยาเขตอีอีซี · ประจำปีการศึกษา 2569 · กลุ่ม B</p>
     </div>
-    <a class="results-cta" href="results.html">ดูผลการเลือกตั้งแบบเรียลไทม์ →</a>
+    <a class="results-cta" href="results.html"><span class="live-dot"></span>ดูผลการเลือกตั้งแบบเรียลไทม์ →</a>
   </div>
 </div>
 

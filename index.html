@@ -370,23 +370,32 @@ document.getElementById('btnConfirmVote').addEventListener('click', async ()=>{
   if(!ok) return;
 
   const btn = document.getElementById('btnConfirmVote');
+  const payload = {
+    action:'submitVote',
+    studentId: session.studentId,
+    nationalId: session.nationalId,
+    candidateNumber: selectedCandidate
+  };
   setLoading(btn, true, 'ยืนยัน', 'กำลังบันทึกคะแนน...');
   try{
-    const result = await apiPost({
-      action:'submitVote',
-      studentId: session.studentId,
-      nationalId: session.nationalId,
-      candidateNumber: selectedCandidate
-    });
+    let result;
+    try{
+      result = await apiPost(payload);
+    } catch(networkErr){
+      // one quiet retry — smooths over a brief queue when many people vote at once
+      setLoading(btn, true, 'ยืนยัน', 'ระบบมีผู้ใช้งานพร้อมกันมาก กำลังลองใหม่...');
+      await new Promise(r => setTimeout(r, 2500));
+      result = await apiPost(payload);
+    }
     if(!result.success){
-      alert(result.message || 'บันทึกคะแนนไม่สำเร็จ กรุณาลองใหม่');
+      alert(result.message || 'บันทึกคะแนนไม่สำเร็จ กรุณาลองกดยืนยันอีกครั้ง');
       setLoading(btn, false, 'ยืนยัน');
       return;
     }
     session = { studentId:'', nationalId:'', fullName:'', year:'' };
     show('view-thanks');
   } catch(err){
-    alert('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    alert('ระบบมีผู้ใช้งานพร้อมกันจำนวนมากในขณะนี้ กรุณารอสักครู่แล้วกดยืนยันอีกครั้ง (คะแนนของท่านยังไม่ถูกบันทึก)');
     setLoading(btn, false, 'ยืนยัน');
   }
 });

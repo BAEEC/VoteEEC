@@ -167,14 +167,18 @@ async function loadConfig(){
 }
 
 /* ---------------- Results (bars + donut) ---------------- */
+const abstainColor = '#3A3D4A';
+
 function renderDashboard(data){
   const candidates = (data.candidates || []).slice().sort((a,b)=> Number(b.votes) - Number(a.votes));
   const maxVotes = Math.max(1, ...candidates.map(c=>Number(c.votes)||0));
 
-  let barsHtml = candidates.map((c,i)=>{
+  let candidateColorIdx = 0;
+  let barsHtml = candidates.map((c)=>{
     const pct = Math.max(4, (Number(c.votes)||0) / maxVotes * 100);
-    const color = barColors[i % barColors.length];
-    const label = Number(c.number) === 0 ? 'งดออกเสียง' : `หมายเลข ${c.number}`;
+    const isAbstain = Number(c.number) === 0;
+    const color = isAbstain ? abstainColor : barColors[candidateColorIdx++ % barColors.length];
+    const label = isAbstain ? 'งดออกเสียง' : `หมายเลข ${c.number}`;
     return `
       <div class="bar-row">
         <div class="bar-label">${label}</div>
